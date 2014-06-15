@@ -37,3 +37,6 @@ a {
   text-decoration: none;
 }
 
+#cybozu_url {
+  width: 200px;
+}

@@ -1,5 +1,5 @@
 var intervalTime = chrome.extension.getBackgroundPage().intervalTime;
-var base_url = "https://github.com";
+var baseUrl = chrome.extension.getBackgroundPage().baseUrl;
 
 // 時間文字列生成
 function dateToStr(date){
@@ -16,7 +16,9 @@ function updateNews(){
   var lastUpdatedAt = chrome.extension.getBackgroundPage().lastUpdatedAt;
   var unread_num = parsedItems.length;
 
-  $('#update').html("未読(" + unread_num + ") - " + dateToStr(lastUpdatedAt));
+  if (lastUpdatedAt){
+    $('#update').html(dateToStr(lastUpdatedAt));
+  }
   $("#list").empty();
   parsedItems.forEach(function(item){
     $("#list").append(
@@ -33,17 +35,40 @@ function updateNews(){
   });
 }
 
+// 更新イベントが来たらリストを更新する
+chrome.runtime.onMessage.addListener(
+  function(request, sender, sendResponse) {
+    if (request.update){
+      updateNews();
+    }
+    sendResponse("updated");
+  }
+);
+ 
 $(document).ready(function() {
   // 記事選択時に background.js へ既読を通知する
   $("#list").on("click",".title", function(){
     var no = $(this).data("id");
     $(this).closest("tr").fadeOut();
     chrome.runtime.sendMessage({"delete_no": no,},function(response) {
-      console.log('message sent:' + no);
+      console.log(response);
     });
   });
 
-  // 定周期でPopupを更新する
+  // URLの更新を background.js へ通知する
+  $("#update_btn").click(function(){
+    var url = $("#cybozu_url").val();
+    if (url != ""){
+      chrome.runtime.sendMessage({"url": url,},function(response) {
+        console.log(response);
+      });
+    }
+  });
+
+  if (baseUrl != ""){
+    $("#cybozu_url").val(baseUrl);
+  }
+
+  // 初回Popupを更新する
   updateNews();
-  setInterval(updateNews,intervalTime);
 });

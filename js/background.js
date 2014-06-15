@@ -1,8 +1,8 @@
 var parsedItems = [];
-var lastUpdatedAt = new Date();
+var lastUpdatedAt = null;
 var intervalTime = 60000;
-var base_url = "https://dg1uu.cybozu.com/o/";
-var news_param = "ag.cgi?page=ReportWhole";
+var baseUrl = "";
+var newsParam = "ag.cgi?page=ReportWhole";
 var number = 0;
 
 function updateBadge(count){
@@ -15,7 +15,9 @@ function updateBadge(count){
 }
 
 function doMonitor(){
- $.get(base_url + news_param, function(data) {
+  if (baseUrl == ""){ return; }
+
+  $.get(baseUrl + newsParam, function(data) {
     var $data = $(data);
     var news = $data.find(".dataList").find("tr");
 
@@ -31,7 +33,7 @@ function doMonitor(){
       }
 
       var current_no = number++;
-      var title = $elems.eq(1).html().replace('href="','data-id="' + current_no + '" class="title" target="_blank" href="' + base_url);
+      var title = $elems.eq(1).html().replace('href="','data-id="' + current_no + '" class="title" target="_blank" href="' + baseUrl);
       var date = $elems.eq(3).text()
       return {no: current_no, title: title, date: date};
     });
@@ -42,29 +44,37 @@ function doMonitor(){
 
     // バッジを更新
     updateBadge(parsedItems.length);
+
+    chrome.runtime.sendMessage({"update": "ok",},function(response) {
+      console.log('message res:' + response);
+    });
   });
 }
 
 // 既読時に元配列から削除する
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
-    var delete_no = request.delete_no;
+    if (request.delete_no){
+      var delete_no = request.delete_no;
 
-    parsedItems.some(function(v, i){
-      if (v.no == delete_no) parsedItems.splice(i,1);
-      console.log("deleted : " + delete_no);
-    });
+      parsedItems.some(function(v, i){
+        if (v.no == delete_no) parsedItems.splice(i,1);
+        console.log("deleted : " + delete_no);
+      });
 
-    var res = 'finish';
-    sendResponse(res);
-
-    // バッジを更新
-    updateBadge(parsedItems.length);
+      // バッジを更新
+      updateBadge(parsedItems.length);
+    }else if (request.url){
+      baseUrl = request.url;
+      doMonitor();
+    }
+    sendResponse('finish');
   }
 );
 
 // 定周期で取得を繰り返す
 $(document).ready(function() {
-  doMonitor();
-  setInterval(doMonitor,intervalTime);
+  setInterval(function(){
+    doMonitor();
+  },intervalTime);
 });
