@@ -3,11 +3,13 @@
     "name": "CyboMonitor",
     "version": "1.0",
     "description": "Cybozeへの書き込みを監視",
+    "icons": { "48": "icons/icon_048.png",
+              "128": "icons/icon_128.png" },
     "background": {
       "scripts": ["js/jquery.min.js", "js/background.js"]
     },
     "permissions": [
-      "https://dg1uu.cybozu.com/"
+      "https://xxxx.cybozu.com/"
     ],
     "browser_action" : {
       "default_icon" : "icons/icon.png",
