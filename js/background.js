@@ -51,10 +51,10 @@ function doMonitor(){
   });
 }
 
-// 既読時に元配列から削除する
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
     if (request.delete_no){
+      // 既読時に元配列から削除する
       var delete_no = request.delete_no;
 
       parsedItems.some(function(v, i){
@@ -64,7 +64,8 @@ chrome.runtime.onMessage.addListener(
 
       // バッジを更新
       updateBadge(parsedItems.length);
-    }else if (request.url){
+    } else if (request.url){
+      // URLの更新
       baseUrl = localStorage['baseUrl'] = request.url;
       doMonitor();
     }
