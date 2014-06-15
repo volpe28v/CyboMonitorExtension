@@ -1,8 +1,9 @@
 var parsedItems = [];
 var lastUpdatedAt = new Date();
-var intervalTime = 10000;
+var intervalTime = 60000;
 var base_url = "https://dg1uu.cybozu.com/o/";
 var news_param = "ag.cgi?page=ReportWhole";
+var number = 0;
 
 function doMonitor(){
  $.get(base_url + news_param, function(data) {
@@ -20,9 +21,10 @@ function doMonitor(){
         return null;
       }
 
-      var title = $elems.eq(1).html().replace('href="','target="_blank" href="' + base_url);
+      var current_no = number++;
+      var title = $elems.eq(1).html().replace('href="','data-id="' + current_no + '" class="title" target="_blank" href="' + base_url);
       var date = $elems.eq(3).text()
-      return {title: title, date: date};
+      return {no: current_no, title: title, date: date};
     });
 
     parsedItems = items;
@@ -30,6 +32,21 @@ function doMonitor(){
     lastUpdatedAt = new Date();
   });
 }
+
+// 既読時に元配列から削除する
+chrome.runtime.onMessage.addListener(
+  function(request, sender, sendResponse) {
+    var delete_no = request.delete_no;
+
+    parsedItems.some(function(v, i){
+      if (v.no == delete_no) parsedItems.splice(i,1);
+      console.log("deleted : " + delete_no);
+    });
+
+    var res = 'finish';
+    sendResponse(res);
+  }
+);
 
 // 定周期で取得を繰り返す
 $(document).ready(function() {
