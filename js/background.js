@@ -1,7 +1,7 @@
 var parsedItems = [];
 var lastUpdatedAt = null;
 var intervalTime = 60000;
-var baseUrl = "";
+var baseUrl = localStorage['baseUrl'];
 var newsParam = "ag.cgi?page=ReportWhole";
 var number = 0;
 
@@ -15,7 +15,7 @@ function updateBadge(count){
 }
 
 function doMonitor(){
-  if (baseUrl == ""){ return; }
+  if (baseUrl == null || baseUrl == ""){ return; }
 
   $.get(baseUrl + newsParam, function(data) {
     var $data = $(data);
@@ -65,7 +65,7 @@ chrome.runtime.onMessage.addListener(
       // バッジを更新
       updateBadge(parsedItems.length);
     }else if (request.url){
-      baseUrl = request.url;
+      baseUrl = localStorage['baseUrl'] = request.url;
       doMonitor();
     }
     sendResponse('finish');
@@ -74,6 +74,7 @@ chrome.runtime.onMessage.addListener(
 
 // 定周期で取得を繰り返す
 $(document).ready(function() {
+  doMonitor();
   setInterval(function(){
     doMonitor();
   },intervalTime);
