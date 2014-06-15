@@ -14,7 +14,6 @@ function dateToStr(date){
 function updateNews(){
   var parsedItems = chrome.extension.getBackgroundPage().parsedItems;
   var lastUpdatedAt = chrome.extension.getBackgroundPage().lastUpdatedAt;
-  var unread_num = parsedItems.length;
 
   if (lastUpdatedAt){
     $('#update').html(dateToStr(lastUpdatedAt));
@@ -44,7 +43,7 @@ chrome.runtime.onMessage.addListener(
     sendResponse("updated");
   }
 );
- 
+
 $(document).ready(function() {
   // 記事選択時に background.js へ既読を通知する
   $("#list").on("click",".title", function(){
