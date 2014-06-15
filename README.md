@@ -1,9 +1,8 @@
-# NewsMonitorExtension
+# CyboMonitorExtension
 
-Chrome Extension の練習用にGithubのNewsを定周期で自動表示してみる。
+Cybozuの更新をポップアップに表示する。
 
-## 仕組み
-* GitHubのNewsページを定周期でスクレイピング
-* PopupにNews内容をリスト表示
-* Popup表示中でもリアルタイム更新
-
+## 対応機能
+* 「報告書」の新規追加とコメント追加の件数をバッジで表示
+* 「報告書」の新規追加とコメント追加をポップアップで一覧表示
+* ポップアップ上の一覧から更新されたページを開く
