@@ -10,7 +10,7 @@ Cybozuの更新をポップアップに表示する ChromeExtension
 ## 使い方
 * サイボウズにログイン
 * CyboMonitor をDLし、manifest.json の "permissions" をお使いのサイボウズの URL に書き換える
- * ex) https://xxxx.cybozu.com/
+ * ex) https://xxxx.cybozu.com/x/
 * Chrome の「設定」->「拡張機能」から「パッケージ化されていない拡張機能を読み込む」で CyboMonitor を読み込む
 * 表示されたアイコンをクリックしてお使いのサイボウズURLを入力して「update」をクリック
  * ex) https://xxxx.cybozu.com/x/
