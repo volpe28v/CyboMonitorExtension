@@ -9,7 +9,7 @@
       "scripts": ["js/jquery.min.js", "js/background.js"]
     },
     "permissions": [
-      "https://xxxx.cybozu.com/"
+      "https://xxxxx.cybozu.com/x/"
     ],
     "browser_action" : {
       "default_icon" : "icons/icon.png",

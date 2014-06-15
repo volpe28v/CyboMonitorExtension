@@ -1,9 +1,10 @@
 var parsedItems = [];
 var lastUpdatedAt = null;
 var intervalTime = 60000;
-var baseUrl = localStorage['baseUrl'];
 var newsParam = "ag.cgi?page=ReportWhole";
 var number = 0;
+
+var baseUrl = chrome.app.getDetails().permissions[0];
 
 function updateBadge(count){
   if (count == 0){
@@ -64,9 +65,7 @@ chrome.runtime.onMessage.addListener(
 
       // バッジを更新
       updateBadge(parsedItems.length);
-    } else if (request.url){
-      // URLの更新
-      baseUrl = localStorage['baseUrl'] = request.url;
+    } else if (request.update){
       doMonitor();
     }
     sendResponse('finish');

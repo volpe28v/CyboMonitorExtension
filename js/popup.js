@@ -54,19 +54,12 @@ $(document).ready(function() {
     });
   });
 
-  // URLの更新を background.js へ通知する
+  // 更新を background.js へ通知する
   $("#update_btn").click(function(){
-    var url = $("#cybozu_url").val();
-    if (url != ""){
-      chrome.runtime.sendMessage({"url": url,},function(response) {
-        console.log(response);
-      });
-    }
+    chrome.runtime.sendMessage({"update": true},function(response) {
+      console.log(response);
+    });
   });
-
-  if (baseUrl != ""){
-    $("#cybozu_url").val(baseUrl);
-  }
 
   // 初回Popupを更新する
   updateNews();
