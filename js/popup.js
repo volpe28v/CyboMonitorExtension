@@ -14,8 +14,9 @@ function dateToStr(date){
 function updateNews(){
   var parsedItems = chrome.extension.getBackgroundPage().parsedItems;
   var lastUpdatedAt = chrome.extension.getBackgroundPage().lastUpdatedAt;
+  var unread_num = parsedItems.length;
 
-  $('#update').html(dateToStr(lastUpdatedAt));
+  $('#update').html("未読(" + unread_num + ") - " + dateToStr(lastUpdatedAt));
   $("#list").empty();
   parsedItems.forEach(function(item){
     $("#list").append(

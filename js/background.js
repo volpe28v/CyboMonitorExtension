@@ -5,6 +5,15 @@ var base_url = "https://dg1uu.cybozu.com/o/";
 var news_param = "ag.cgi?page=ReportWhole";
 var number = 0;
 
+function updateBadge(count){
+  if (count == 0){
+    chrome.browserAction.setBadgeBackgroundColor({color:[0, 0, 255, 100]});
+  }else{
+    chrome.browserAction.setBadgeBackgroundColor({color:[255, 0, 0, 100]});
+  }
+  chrome.browserAction.setBadgeText({text:String(count)});
+}
+
 function doMonitor(){
  $.get(base_url + news_param, function(data) {
     var $data = $(data);
@@ -30,6 +39,9 @@ function doMonitor(){
     parsedItems = items;
     console.log(items);
     lastUpdatedAt = new Date();
+
+    // バッジを更新
+    updateBadge(parsedItems.length);
   });
 }
 
@@ -45,6 +57,9 @@ chrome.runtime.onMessage.addListener(
 
     var res = 'finish';
     sendResponse(res);
+
+    // バッジを更新
+    updateBadge(parsedItems.length);
   }
 );
 
