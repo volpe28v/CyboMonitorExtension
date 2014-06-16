@@ -63,7 +63,7 @@ function getReport(urlParam, depth, callback){
   });
 }
 
-function getBulletin(){
+function getBulletin(callback){
   // 掲示板の取得
   $.get(baseUrl + bulletinParam, function(data) {
     var $data = $(data);
@@ -88,14 +88,7 @@ function getBulletin(){
 
     parsedItems = parsedItems.concat(items);
 
-    lastUpdatedAt = new Date();
-
-    // バッジを更新
-    updateBadge(parsedItems.length);
-
-    chrome.runtime.sendMessage({"update": "ok",},function(response) {
-      console.log('message res:' + response);
-    });
+    callback();
   });
 }
 
@@ -104,7 +97,13 @@ function doMonitor(){
 
   parsedItems = [];
   getReport(newsParam, reportDepth, function(){
-    getBulletin();
+    getBulletin(function(){
+      lastUpdatedAt = new Date();
+      updateBadge(parsedItems.length);
+      chrome.runtime.sendMessage({"update": "ok",},function(response) {
+        console.log('message res:' + response);
+      });
+    });
   });
 }
 
