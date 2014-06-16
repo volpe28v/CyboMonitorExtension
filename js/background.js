@@ -1,7 +1,9 @@
 var parsedItems = [];
 var lastUpdatedAt = null;
 var intervalTime = 60000;
-var newsParam = "ag.cgi?page=ReportWhole";
+var newsParam     = "ag.cgi?page=ReportWhole";
+var bulletinParam = "ag.cgi?page=BulletinIndex";
+var reportDepth = 3; // 20件 x depth
 var number = 0;
 
 var baseUrl = chrome.app.getDetails().permissions[0];
@@ -15,10 +17,8 @@ function updateBadge(count){
   chrome.browserAction.setBadgeText({text:String(count)});
 }
 
-function doMonitor(){
-  if (baseUrl == null || baseUrl == ""){ return; }
-
-  $.get(baseUrl + newsParam, function(data) {
+function getReport(urlParam, depth, callback){
+  $.get(baseUrl + urlParam, function(data) {
     var $data = $(data);
     var news = $data.find(".dataList").find("tr");
 
@@ -39,8 +39,55 @@ function doMonitor(){
       return {no: current_no, title: title, date: date};
     });
 
-    parsedItems = items;
-    console.log(items);
+    // 結果を格納
+    parsedItems = parsedItems.concat(items);
+
+    depth--;
+    if (depth > 0){
+      // 次のリンク先を取得
+      var nextLinks = $data.find(".vr_nNavi").find("a");
+      var nextLink = null;
+      nextLinks.each(function(){
+        if ($(this).text().match("次の20件へ")){
+          nextLink = $(this).attr("href");
+        }
+      });
+      if (nextLink){
+        getReport(nextLink, depth, callback);
+      }else{
+        callback();
+      }
+    }else{
+      callback();
+    }
+  });
+}
+
+function getBulletin(){
+  // 掲示板の取得
+  $.get(baseUrl + bulletinParam, function(data) {
+    var $data = $(data);
+    var news = $data.find(".dataList").find("tr");
+
+    var items = $.map(news,function(one_news, i) {
+      if (i == 0){ return null; } // 1つ目は見出し
+      var $elems = $(one_news).find("td");
+      if ($elems.eq(0).find("b").length > 0){
+        // 本文未読の場合は有効
+      }else if ($elems.eq(0).find("img").attr("src").match("_u.png")){
+        // コメント未読の場合は有効
+      }else{
+        return null;
+      }
+
+      var current_no = number++;
+      var title = $elems.eq(0).html().replace('href="','data-id="' + current_no + '" class="title" target="_blank" href="' + baseUrl);
+      var date = $elems.eq(3).text()
+      return {no: current_no, title: title, date: date};
+    });
+
+    parsedItems = parsedItems.concat(items);
+
     lastUpdatedAt = new Date();
 
     // バッジを更新
@@ -49,6 +96,15 @@ function doMonitor(){
     chrome.runtime.sendMessage({"update": "ok",},function(response) {
       console.log('message res:' + response);
     });
+  });
+}
+
+function doMonitor(){
+  if (baseUrl == null || baseUrl == ""){ return; }
+
+  parsedItems = [];
+  getReport(newsParam, reportDepth, function(){
+    getBulletin();
   });
 }
 
