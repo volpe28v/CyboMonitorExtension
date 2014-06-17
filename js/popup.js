@@ -46,7 +46,7 @@ chrome.runtime.onMessage.addListener(
 
 $(document).ready(function() {
   // 記事選択時に background.js へ既読を通知する
-  $("#list").on("click",".title", function(){
+  $("#list").on("click",".title-link", function(){
     var no = $(this).data("id");
     $(this).closest("tr").fadeOut();
     chrome.runtime.sendMessage({"delete_no": no,},function(response) {
