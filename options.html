@@ -1,0 +1,61 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>CyboMonitor</title>
+    <link rel="stylesheet" href="css/chrome-bootstrap.css">
+    <style>
+      .chrome-bootstrap .frame .view {
+        -webkit-margin-start: 170px
+      }
+
+      input[type='text'] {
+        width: 350px;
+      }
+
+      #success_message {
+        margin-top: 10px;
+        padding: 5px 10px;
+        opacity: 0;
+        transition: opacity 0.5s ease-out;
+      }
+
+      #success_message.visible {
+        opacity: 1;
+      }
+    </style>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/options.js"></script>
+  </head>
+  <body class="chrome-bootstrap">
+    <div class="frame">
+      <div class="navigation">
+        <h1>
+          <a href="https://github.com/volpe28v/CyboMonitorExtension">CyboMonitor</a>
+        </h1>
+        <ul class="menu">
+          <li class="selected">
+            <a href="#url">URL</a>
+          </li>
+        </ul>
+      </div>
+      <div class="mainview view">
+        <div id="settings" class="selected">
+          <header>
+            <h1>URL</h1>
+          </header>
+          <div class="content">
+            <section>
+              <h3>Cybozu URL</h3>
+              <input type="text" id="cybozu_url" placeholder="https://xxxxxxxxxxx.cybozu.com/o/" autofocus>
+            </section>
+            <div class="controls">
+              <button id="save">Save</button> <span id="save_alert" style="display:none">saved</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
+

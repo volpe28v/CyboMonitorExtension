@@ -8,12 +8,10 @@
     "background": {
       "scripts": ["js/jquery.min.js", "js/background.js"]
     },
-    "permissions": [
-      "https://xxxxx.cybozu.com/x/"
-    ],
     "browser_action" : {
       "default_icon" : "icons/icon.png",
       "default_title" : "Popup",
       "default_popup" : "popup.html"
-    }
+    },
+    "options_page": "options.html"
 }

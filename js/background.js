@@ -5,8 +5,9 @@ var newsParam     = "ag.cgi?page=ReportWhole";
 var bulletinParam = "ag.cgi?page=BulletinIndex";
 var reportDepth = 3; // 20件 x depth
 var number = 0;
+var key = "cybo_url";
 
-var baseUrl = chrome.app.getDetails().permissions[0];
+var baseUrl = "";
 
 function updateBadge(count){
   if (count == 0){
@@ -93,6 +94,7 @@ function getBulletin(callback){
 }
 
 function doMonitor(){
+  baseUrl = localStorage.getItem(key);
   if (baseUrl == null || baseUrl == ""){ return; }
 
   parsedItems = [];
