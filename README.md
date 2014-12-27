@@ -1,6 +1,7 @@
 # CyboMonitorExtension
 
 Cybozuの更新をポップアップに表示する ChromeExtension
+
 ![スクリーンショット](https://dl.dropboxusercontent.com/u/1215986/CyboMonitorExtension.png)
 
 ## 対応機能
