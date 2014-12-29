@@ -1,5 +1,4 @@
 var intervalTime = chrome.extension.getBackgroundPage().intervalTime;
-var baseUrl = chrome.extension.getBackgroundPage().baseUrl;
 
 // 時間文字列生成
 function dateToStr(date){
@@ -12,12 +11,20 @@ function dateToStr(date){
 
 // ニュースを更新
 function updateNews(){
+  var baseUrl = chrome.extension.getBackgroundPage().baseUrl;
   var parsedItems = chrome.extension.getBackgroundPage().parsedItems;
   var lastUpdatedAt = chrome.extension.getBackgroundPage().lastUpdatedAt;
+
+  // URLが設定されていなければ警告表示
+  if (baseUrl == null || baseUrl == ""){
+    alert("[設定]->[拡張機能]->[CyboMonitor]のオプションからサイボウズURLを設定してください");
+    return;
+  }
 
   if (lastUpdatedAt){
     $('#update').html(dateToStr(lastUpdatedAt));
   }
+
   $("#list").empty();
   parsedItems.forEach(function(item){
     $("#list").append(
