@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "CyboMonitor",
-    "version": "1.1",
+    "version": "1.2",
     "description": "Cybozeの報告書と掲示板への書き込みを監視",
     "icons": { "48": "icons/icon_048.png",
               "128": "icons/icon_128.png" },
