@@ -22,6 +22,11 @@ $(function(){
     localStorage.setItem(key, url);
     showStorage();
     showAlert();
+
+    // background.js に更新を通知
+    chrome.runtime.sendMessage({"update": true},function(response) {
+      console.log(response);
+    });
   });
 
   showStorage();
