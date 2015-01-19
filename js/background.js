@@ -93,9 +93,14 @@ function getBulletin(callback){
   });
 }
 
-function doMonitor(){
+function doMonitor(callback){
   baseUrl = localStorage.getItem(key);
-  if (baseUrl == null || baseUrl == ""){ return; }
+  if (baseUrl == null || baseUrl == ""){
+    if (callback){
+      callback();
+    }
+    return;
+  }
 
   parsedItems = [];
   getReport(newsParam, reportDepth, function(){
@@ -105,6 +110,9 @@ function doMonitor(){
       chrome.runtime.sendMessage({"update": "ok",},function(response) {
         console.log('message res:' + response);
       });
+      if (callback){
+        callback();
+      }
     });
   });
 }
@@ -122,10 +130,25 @@ chrome.runtime.onMessage.addListener(
 
       // バッジを更新
       updateBadge(parsedItems.length);
+      sendResponse('finish');
+      return;
     } else if (request.update){
-      doMonitor();
+      doMonitor(function(){ sendResponse('finish')});
+      return;
+    } else if (request.update_from_content){
+      doMonitor(function(){
+        chrome.tabs.getSelected(null, function(tab) {
+          chrome.tabs.sendRequest(tab.id, {updated: "ok"}, function(response) {
+            console.log("updated: " + response);
+          });
+        });
+      });
+      sendResponse('finish');
+      return;
+    } else if (request.list){
+      sendResponse(parsedItems);
+      return;
     }
-    sendResponse('finish');
   }
 );
 
