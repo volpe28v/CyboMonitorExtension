@@ -1,6 +1,11 @@
 .latest-report-link {
-  top: 4px;
+  top: 5px;
   position: relative;
-  padding-left: 4px;
-  padding-right: 6px;
+  padding-left: 6px;
+  padding-right: 8px;
+}
+
+.title-link {
+  color: #eee !important;
+  font-weight: bold !important;
 }
