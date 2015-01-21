@@ -8,4 +8,9 @@
 .title-link {
   color: #eee !important;
   font-weight: bold !important;
+  text-decoration: none !important;
+}
+
+.title-link:hover {
+  color: yellow !important;
 }

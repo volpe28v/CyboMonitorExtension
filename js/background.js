@@ -82,7 +82,7 @@ function getBulletin(callback){
       }
 
       var current_no = number++;
-      var title = $elems.eq(0).html().replace('href="','data-id="' + current_no + '" class="title" target="_blank" href="' + baseUrl);
+      var title = $elems.eq(0).html().replace('href="','data-id="' + current_no + '" class="title-link" target="_blank" href="' + baseUrl);
       var date = $elems.eq(3).text()
       return {no: current_no, title: title, date: date};
     });

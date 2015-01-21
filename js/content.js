@@ -21,14 +21,14 @@ function getReportList(){
 }
 
 function setTitleLink(title){
-  var unjump_title = title.replace('target="_blank"',"");
+  var $unjump_title = $(title.replace('target="_blank"',""));
   var $nextLi= $('<li/>')
     .addClass("yuimenubaritem vr_headerMenuAdmin yuimenubaritem-hassubmenu")
     .attr("groupindex",0).attr("index",5)
     .css("display","none")
     .append($('<span/>')
       .addClass('latest-report-link')
-      .html(unjump_title)
+      .append($unjump_title)
     );
 
   $('.headermenutip').append($nextLi);
