@@ -3,6 +3,7 @@ var lastUpdatedAt = null;
 var intervalTime = 60000;
 var newsParam     = "ag.cgi?page=ReportWhole";
 var bulletinParam = "ag.cgi?page=BulletinIndex";
+var notificationParam = "ag.cgi?page=NotificationIndex";
 var reportDepth = 3; // 20件 x depth
 var number = 0;
 var key = "cybo_url";
@@ -93,6 +94,29 @@ function getBulletin(callback){
   });
 }
 
+function getNotification(callback){
+  // メッセージの取得
+  $.get(baseUrl + notificationParam, function(data) {
+    var $data = $(data);
+    var notifications= $data.find(".notificationRow");
+
+    var items = $.map(notifications,function(notification) {
+      var $elems = $(notification).find(".notificationSubject");
+      if ($elems[0] == undefined){ return null; }
+
+      var current_no = number++;
+      var title = $elems.eq(0).html().replace('href="','data-id="' + current_no + '" class="title-link" target="_blank" href="' + baseUrl);
+      var date = "-";
+
+      return {no: current_no, title: title, date: date};
+    });
+
+    parsedItems = parsedItems.concat(items);
+
+    callback();
+  });
+}
+
 function doMonitor(callback){
   baseUrl = localStorage.getItem(key);
   if (baseUrl == null || baseUrl == ""){
@@ -105,14 +129,16 @@ function doMonitor(callback){
   parsedItems = [];
   getReport(newsParam, reportDepth, function(){
     getBulletin(function(){
-      lastUpdatedAt = new Date();
-      updateBadge(parsedItems.length);
-      chrome.runtime.sendMessage({"update": "ok",},function(response) {
-        console.log('message res:' + response);
+      getNotification(function(){
+        lastUpdatedAt = new Date();
+        updateBadge(parsedItems.length);
+        chrome.runtime.sendMessage({"update": "ok",},function(response) {
+          console.log('message res:' + response);
+        });
+        if (callback){
+          callback();
+        }
       });
-      if (callback){
-        callback();
-      }
     });
   });
 }
