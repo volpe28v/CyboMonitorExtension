@@ -1,5 +1,3 @@
-var intervalTime = chrome.extension.getBackgroundPage().intervalTime;
-
 // 時間文字列生成
 function dateToStr(date){
   function zero(number){

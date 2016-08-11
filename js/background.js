@@ -1,12 +1,10 @@
 var parsedItems = [];
 var lastUpdatedAt = null;
-var intervalTime = 60000;
 var newsParam     = "ag.cgi?page=ReportWhole";
 var bulletinParam = "ag.cgi?page=BulletinIndex";
 var notificationParam = "ag.cgi?page=NotificationIndex";
 var reportDepth = 3; // 20件 x depth
 var number = 0;
-var key = "cybo_url";
 
 var baseUrl = "";
 
@@ -118,7 +116,7 @@ function getNotification(callback){
 }
 
 function doMonitor(callback){
-  baseUrl = localStorage.getItem(key);
+  baseUrl = localStorage.cybo_url;
   if (baseUrl == null || baseUrl == ""){
     if (callback){
       callback();
@@ -143,6 +141,30 @@ function doMonitor(callback){
   });
 }
 
+function getInterval(){
+  var interval = Number(localStorage.cybo_interval);
+  interval = interval * 60 * 1000;  
+
+  return interval != 0 ? interval : 60000;
+}
+
+var timerId = 0;
+function startMonitoring(){
+  doMonitor();
+  timerId = setTimeout(startMonitoring, getInterval());
+}
+
+function stopMonitoring(){
+  if (timerId == 0){ return; }
+  clearTimeout(timerId);
+  timerId = 0;
+}
+
+function restartMonitoring(){
+  stopMonitoring();
+  startMonitoring();
+}
+
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
     if (request.delete_no){
@@ -159,7 +181,8 @@ chrome.runtime.onMessage.addListener(
       sendResponse('finish');
       return;
     } else if (request.update){
-      doMonitor(function(){ sendResponse('finish')});
+      restartMonitoring();
+      sendResponse('finish');
       return;
     } else if (request.update_from_content){
       doMonitor(function(){
@@ -180,8 +203,5 @@ chrome.runtime.onMessage.addListener(
 
 // 定周期で取得を繰り返す
 $(document).ready(function() {
-  doMonitor();
-  setInterval(function(){
-    doMonitor();
-  },intervalTime);
+  startMonitoring();
 });

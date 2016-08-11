@@ -1,10 +1,7 @@
-// localStorageのキー
-var key = "cybo_url";
-
 // localStorageに保存したデータの表示
 var showStorage = function() {
-  var url = localStorage.getItem(key);
-  $('#cybozu_url').val(url);
+  $('#cybozu_url').val(localStorage.cybo_url);
+  $('#interval').val(localStorage.cybo_interval);
 };
 
 // 保存表示
@@ -18,8 +15,9 @@ var showAlert = function(){
 
 $(function(){
   $('#save').click(function() {
-    var url = $('#cybozu_url').val();
-    localStorage.setItem(key, url);
+    localStorage.cybo_url = $('#cybozu_url').val();
+    var interval = Number($('#interval').val());
+    localStorage.cybo_interval = interval >= 1 ? interval : 1;
     showStorage();
     showAlert();
 
