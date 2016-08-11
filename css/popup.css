@@ -28,6 +28,11 @@ body {
   color: #888;
 }
 
+.interval{
+  font-size: 12px;
+  margin-left: 5px;
+}
+
 .title {
   width: 100%;
 }

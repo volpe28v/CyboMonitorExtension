@@ -12,6 +12,7 @@ function updateNews(){
   var baseUrl = chrome.extension.getBackgroundPage().baseUrl;
   var parsedItems = chrome.extension.getBackgroundPage().parsedItems;
   var lastUpdatedAt = chrome.extension.getBackgroundPage().lastUpdatedAt;
+  var intervalTime = chrome.extension.getBackgroundPage().intervalTime;
 
   // URLが設定されていなければ警告表示
   if (baseUrl == null || baseUrl == ""){
@@ -20,7 +21,7 @@ function updateNews(){
   }
 
   if (lastUpdatedAt){
-    $('#update').html(dateToStr(lastUpdatedAt));
+    $('#update').html(dateToStr(lastUpdatedAt) + "<span class='interval'>(" + intervalTime / 60000 + "min)</span>");
   }
 
   $("#list").empty();

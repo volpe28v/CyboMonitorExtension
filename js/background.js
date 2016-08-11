@@ -7,6 +7,7 @@ var reportDepth = 3; // 20件 x depth
 var number = 0;
 
 var baseUrl = "";
+var intervalTime = getInterval();
 
 function updateBadge(count){
   if (count == 0){
@@ -143,15 +144,14 @@ function doMonitor(callback){
 
 function getInterval(){
   var interval = Number(localStorage.cybo_interval);
-  interval = interval * 60 * 1000;  
-
-  return interval != 0 ? interval : 60000;
+  return interval >= 1 ? interval * 60 * 1000 : 60000;
 }
 
 var timerId = 0;
 function startMonitoring(){
   doMonitor();
-  timerId = setTimeout(startMonitoring, getInterval());
+  intervalTime = getInterval();
+  timerId = setTimeout(startMonitoring, intervalTime);
 }
 
 function stopMonitoring(){
